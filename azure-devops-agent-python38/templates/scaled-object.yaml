@@ -1,0 +1,1 @@
+{{- template "azdo-agent-library-chart.scaled-object" . }}

@@ -1,0 +1,104 @@
+parameters:
+    - name: clusterName
+      type: string
+  
+    # - name: argoCliDockerImage
+    #   type: string
+    #   default: 'artifactory.scrdairy.com/docker-local/devops/argocd-cli:1.1.0'
+
+jobs:
+  - job: updateCommitInRootApp      
+    displayName: 'Update commit id to ArgoCD root application'
+    
+    workspace:
+      clean: all
+    
+    steps:
+      - checkout: git://DevOps/azdo-agents-gitops
+        persistCredentials: true
+        clean: true    
+
+      - task: Bash@3
+        displayName: 'Commit and push the commit in root app'
+        inputs:
+          targetType: 'inline'
+          script: |
+            git switch ${{ parameters.clusterName }}
+            git pull            
+            
+            targetRevision=$(cat ./values.yaml | grep targetRevision: | awk '{print $2}')
+            sed -i "s/$targetRevision/$(Build.SourceVersion)/" ./values.yaml
+
+            git config --global user.email "you@example.com"
+            git config --global user.name "ArgoCD GitOps"
+            git add .
+            git commit -m "$(Build.SourceVersionMessage)"
+            git diff origin/${{ parameters.clusterName }}
+            git push origin HEAD:${{ parameters.clusterName }} --force          
+
+  - deployment: SyncAndWait
+    displayName: 'ArgoCD - Sync Application & Wait'
+    environment: ${{ parameters.clusterName }}
+    dependsOn: updateCommitInRootApp
+
+    container:
+      image: ${{ parameters.argoCliDockerImage }}
+      endpoint: 'DockerArtifactoryOnPremise'
+      options: --user 0:0
+
+    variables:                    
+      env: ${{ parameters.clusterName }} # This variable is for the Vault template task     
+      argocd-cli-command: '--auth-token $(argocd_token) --server $(argocd-url) --grpc-web' 
+
+    workspace:
+      clean: all
+
+    strategy:
+      runOnce:
+        deploy:        
+          steps:                        
+            - download: none     
+
+            - script: |
+                curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+                chmod +x /usr/local/bin/argocd
+              displayName: 'Install ArgoCD CLI' 
+
+            - script: |
+                #!/bin/bash
+
+                #######################################################
+                # Function: Sync and wait for Agents root application #
+                #######################################################
+                function sync_and_wait {
+                    argocd app sync $1 $ARGO_CLI_COMMAND
+                    st=$?
+
+                    if [ $st != 0 ]; then
+                      echo "***** Sync has failed *****"
+                      exit 1
+                    fi
+
+                    argocd app wait $1 $ARGO_CLI_COMMAND --health --suspended --sync --timeout 180
+                    healthStatus=$(argocd app get $1 $ARGO_CLI_COMMAND -o yaml | yq e '.status.health.status')
+
+                    # TODO: check if not synced also or degraded
+                    if [ $healthStatus != "Healthy" ]; then
+                      argocd app rollback $1 $ARGO_CLI_COMMAND
+                      argocd app wait $1 $ARGO_CLI_COMMAND --health --sync
+                      echo "***** Application status is not Healthy! Please fix *****"
+                      echo "***** Rolling back to previous version *****"
+                      exit 1
+                    fi                          
+                }
+
+                #############################################
+                # Sync and wait for Agents root application #
+                #############################################
+                sync_and_wait $AZ_DEVOPS_ROOT_APP                
+              displayName: 'Sync Agents root application to desired state'
+              condition: succeeded()
+              continueOnError: false
+              env:
+                ARGO_CLI_COMMAND: $(argocd-cli-command)   
+                AZ_DEVOPS_ROOT_APP: $(agentsRootApplicationName)

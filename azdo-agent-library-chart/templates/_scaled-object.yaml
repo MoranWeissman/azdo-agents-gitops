@@ -1,0 +1,21 @@
+{{- define "azdo-agent-library-chart.scaled-object" -}}
+
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Values.scaler.name }}
+spec:
+  scaleTargetRef:
+    kind: "{{ .Values.target.kind }}"
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.minReplicaCount }}
+  maxReplicaCount: {{ .Values.maxReplicaCount }}
+  triggers:
+    - type: azure-pipelines
+      metadata:
+        poolName: "{{ .Values.poolName }}"
+        poolID: "{{ .Values.poolId }}"
+        organizationURLFromEnv: "AZP_URL"
+        personalAccessTokenFromEnv: "AZP_TOKEN"
+
+{{- end -}}

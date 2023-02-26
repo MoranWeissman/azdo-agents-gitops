@@ -1,0 +1,42 @@
+replicaCount: 1
+
+namespace: agents
+
+image:
+  repository: ""
+  pullPolicy: Always  
+  tag: 0.0.1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+resources:
+  limits:
+    cpu: 0.5
+    memory: 1Gi
+  requests:
+    cpu: 0.5
+    memory: 1Gi
+
+externalSecretsOperator:
+  secretName: 
+   - "azdo-agents-eks"
+
+envValues:      
+  AZP_URL: "https://dev.azure.com/moranweissman"
+  AZP_POOL: "eks-agents" 
+
+terminationGracePeriodSeconds: 30
+
+target:
+  name: agent
+  kind: deployment
+# Minimum replica count should always be at least 1 since the agent pool cannot be empty
+minReplicaCount: 1
+maxReplicaCount: 5
+poolId: ""
+poolName: ""
+
+scaler:
+  name: azure-pipelines-scaler-python38
