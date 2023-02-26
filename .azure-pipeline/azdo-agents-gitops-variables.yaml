@@ -1,4 +1,0 @@
-variables:    
-  argocd-url: eks-azdo-agents.blabla.com  
-  agentsRootApplicationName: azdo-agents-root
-  system.debug: true

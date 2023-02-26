@@ -1,9 +1,0 @@
-stages:
-  # Cluster: eks-azdo-agents
-  - stage: eks-azdo-agents
-    displayName: 'eks-azdo-agents'    
-
-    jobs:
-      - template: argocd-sync-job.yml
-        parameters:
-          clusterName: eks-azdo-agents
