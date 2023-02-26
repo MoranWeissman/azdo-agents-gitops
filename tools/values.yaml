@@ -7,8 +7,8 @@ const:
   argoNS: argocd
 
 source:  
-  repoURL: git@ssh.dev.azure.com:v3/moranweissman/DevOps/azdo-agents-gitops
+  repoURL: git@ssh.dev.azure.com:v3/<ORGANIZATION>/DevOps/azdo-agents-gitops
 
 general:
-  serviceAccountRole: "arn:aws:iam::704909879244:role/eks-azdo-agents-secret-manager"
+  serviceAccountRole: "arn:aws:iam::<ACCOUNTID>:role/eks-azdo-agents-secret-manager"
   clusterName: "eks-azdo-agents"

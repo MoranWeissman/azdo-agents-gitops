@@ -7,17 +7,17 @@ const:
   argoNS: argocd
 
 source:  
-  repoURL: git@ssh.dev.azure.com:v3/moranweissman/DevOps/azdo-agents-gitops
+  repoURL: git@ssh.dev.azure.com:v3/<ORGANIZATION>/DevOps/azdo-agents-gitops
   targetRevision: main
 
 general:
-  AZP_URL: "https://dev.azure.com/moranweissman"
+  AZP_URL: "https://dev.azure.com/<ORGANIZATION>"
   AZP_POOL: "eks-agents"
   clusterName: "eks-azdo-agents"
 
 agents:
   generic:
-    repoURL: "704909879244.dkr.ecr.eu-west-1.amazonaws.com/azure-devops-agent-generic"
+    repoURL: "<ACCOUNTID>.dkr.ecr.eu-west-1.amazonaws.com/azure-devops-agent-generic"
 
   python38:
-    repoURL: "704909879244.dkr.ecr.eu-west-1.amazonaws.com/azure-devops-agent-python38"
+    repoURL: "<ACCOUNTID>.dkr.ecr.eu-west-1.amazonaws.com/azure-devops-agent-python38"
