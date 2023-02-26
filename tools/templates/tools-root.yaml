@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: {{ .Values.appProject }}-root
+  namespace: {{ .Values.const.argoNS }}
+  finalizers:
+  - {{ .Values.const.finalizers }}
+
+spec:
+  project: default
+
+  source:   
+    path: tools/ 
+    repoURL: {{ .Values.source.repoURL }}
+    targetRevision: {{ .Values.env }}
+    
+  destination:
+    server: {{ .Values.const.server }}
+    namespace: {{ .Values.const.argoNS }}

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: azure-devops-agent-python38
+  namespace: {{ .Values.const.argoNS }}
+  finalizers:
+    - {{ .Values.const.finalizers }}
+
+spec:
+  project: {{ .Values.appProject }}
+  source:
+    path: azure-devops-agent-python38
+    repoURL: {{ .Values.source.repoURL }}
+    targetRevision: {{ .Values.source.targetRevision }}
+    helm:
+      parameters:      
+        - name: image.repository
+          value: {{ .Values.agents.python38.repoURL }}
+        - name: envValues.AZP_URL
+          value: {{ .Values.general.AZP_URL }}
+        - name: envValues.AZP_POOL
+          value: {{ .Values.general.AZP_POOL }}        
+          
+  ignoreDifferences:
+  - group: "apps"
+    kind: "Deployment"
+    jsonPointers:
+    - /spec/replicas    
+
+  destination:    
+    namespace: {{ .Values.appProject }}
+    server: {{ .Values.const.server }}
+  
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true      

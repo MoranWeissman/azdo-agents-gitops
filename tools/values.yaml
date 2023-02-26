@@ -1,0 +1,14 @@
+env: eks-azdo-agents
+appProject: tools
+
+const:
+  finalizers: resources-finalizer.argocd.argoproj.io
+  server: https://kubernetes.default.svc
+  argoNS: argocd
+
+source:  
+  repoURL: git@ssh.dev.azure.com:v3/moranweissman/DevOps/azdo-agents-gitops
+
+general:
+  serviceAccountRole: "arn:aws:iam::704909879244:role/eks-azdo-agents-secret-manager"
+  clusterName: "eks-azdo-agents"

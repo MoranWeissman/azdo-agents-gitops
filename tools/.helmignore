@@ -1,0 +1,4 @@
+# Ignore the following folders because they should not be part of the app-of-apps pattern here
+# They are mamaged by their own ArgoCD applications
+configurations/
+eso-secrets/

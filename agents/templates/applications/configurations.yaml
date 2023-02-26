@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: configurations
+  namespace: {{ .Values.const.argoNS }}
+  finalizers:
+  - {{ .Values.const.finalizers }}
+
+spec:
+  project: configurations  
+  source:
+    path: "{{ .Values.appProject }}/templates/configurations"
+    repoURL: {{ .Values.source.repoURL }}
+    targetRevision: {{ .Values.general.clusterName }}
+    directory:
+      recurse: true
+      jsonnet: {}
+      include: '**/*'    
+
+  destination:
+    server: {{ .Values.const.server }}
+    namespace: {{ .Values.const.argoNS }}
+
+  syncPolicy:
+    automated:
+      selfHeal: true      
