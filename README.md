@@ -1,4 +1,4 @@
-# Repository Name
+# azdo-agents-gitops
 
 This repository contains the code for deploying Azure DevOps agents to EKS via ArgoCD. 
 
