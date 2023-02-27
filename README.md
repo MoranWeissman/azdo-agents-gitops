@@ -1,6 +1,10 @@
 # Repository Name
 
-This repository contains the code for deploying Azure DevOps agents to EKS via Azure DevOps pipelines and ArgoCD. 
+This repository contains the code for deploying Azure DevOps agents to EKS via ArgoCD. 
+
+In the context of ArgoCD, a GitOps repository is a version-controlled repository containing declarative configuration files and manifests for the applications and infrastructure that ArgoCD manages. The repository serves as the single source of truth for the desired state of the system, and changes to the system are made by modifying the configuration files in the repository.
+When changes are committed to the GitOps repository, ArgoCD automatically detects them and applies them to the system. This means that the entire configuration management process is handled through Git, providing a clear audit trail of all changes made to the system.
+
 
 ## Folders
 
