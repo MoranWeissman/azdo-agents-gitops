@@ -24,8 +24,8 @@ externalSecretsOperator:
    - "azdo-agents-eks"
 
 envValues:      
-  AZP_URL: "https://dev.azure.com/moranweissman"
-  AZP_POOL: "eks-agents" 
+  AZP_URL: ""
+  AZP_POOL: "" 
 
 terminationGracePeriodSeconds: 30
 
