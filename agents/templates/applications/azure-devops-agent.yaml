@@ -20,7 +20,9 @@ spec:
         - name: envValues.AZP_URL
           value: {{ .Values.general.AZP_URL }}
         - name: envValues.AZP_POOL
-          value: {{ .Values.general.AZP_POOL }}        
+          value: {{ .Values.general.AZP_POOL }}
+        - name: poolName
+          value: {{ .Values.general.AZP_POOL }}
           
   ignoreDifferences:
   - group: "apps"

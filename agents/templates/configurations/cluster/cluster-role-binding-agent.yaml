@@ -9,13 +9,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: 'azure-devops-agent-python38-sa'
-    namespace: azure-devops-agents
-  - kind: ServiceAccount
-    name: 'azure-devops-agent-java-maven-sa'
-    namespace: azure-devops-agents    
-  - kind: ServiceAccount
-    name: 'azure-devops-kaniko-sa'
-    namespace: azure-devops-agents
+    namespace: agents
   - kind: ServiceAccount
     name: 'azure-devops-agent-generic-sa'
-    namespace: azure-devops-agents        
+    namespace: agents
